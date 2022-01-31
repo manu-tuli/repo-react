@@ -1,0 +1,39 @@
+.letter-container .letter{
+    background-color: lightblue;
+    border-radius: 5px;
+    width: 40px;
+    margin: 2px;
+    text-align: center;
+    color: white;
+
+    /*
+    box-shadow: inset 5px 5px aliceblue;
+    display: flex;
+    align-self: center;
+    align-content: center;
+    */
+}
+
+.letter-container :hover{
+    background-color: rgb(198, 154, 230);
+    box-shadow:  2px 2px 2px tomato;
+}
+
+.letter-container{
+    display: flex;
+    background-color: whitesmoke;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    width: 400px;
+    margin: 100px;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 3px 3px 3px aliceblue;
+}
+
+    /*
+    position: sticky;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+    */
