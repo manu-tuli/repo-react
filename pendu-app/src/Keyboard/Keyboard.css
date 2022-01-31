@@ -1,0 +1,7 @@
+.letter-container{
+    display: flex;
+}
+
+.letter{
+    margin: 20px;
+}
