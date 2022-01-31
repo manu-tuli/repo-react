@@ -8,7 +8,7 @@ import Keyboard from './Keyboard.jsx';
 ReactDOM.render(
   <React.StrictMode>
     <App />
-    <Keyboard />
+    
   </React.StrictMode>,
   document.getElementById('root')
 );
