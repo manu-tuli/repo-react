@@ -60,6 +60,7 @@ class App extends Component {
       win : false
       };
       console.log(this.state.motAtrouver)
+     
 
   }
 
@@ -68,7 +69,7 @@ class App extends Component {
     let index = Math.floor(Math.random()* dictionnaire.length)
     let mot = dictionnaire[index]
     const word = mot.split('')
-  
+
     while (word.length>0) {
       const letter = word.shift().toUpperCase()
       result.push(letter)
@@ -92,12 +93,19 @@ class App extends Component {
   }
 
   checkWin(newmotCache){
-    let win = "true";
+    let win = "false";
+    
     for (var i=0; i < newmotCache.length ; i++){
         if (newmotCache[i] != this.state.motAtrouver[i]){
           win = "false"
+          
+        }
+        else
+        {
+          win = "true";
         }
     }
+    
     return win;
   }
 
@@ -128,21 +136,50 @@ class App extends Component {
 
   }
 
+  FoundedOrNot () {
+     
+    const found ='Tu as gagné !!!';
+    const cont = 'Continue';
+
+    if(this.state.win === "false")
+    {
+      return cont;
+      
+    }
+    else 
+    {
+      return found;
+    }
+   
+    
+  
+  }
+    
+     
+     
+  
+  
+
   render() {
     const gameProps = {
       ...this.state
     };
-
+    
     return (
       <div className="Hangman">
-          <h1>Jeux du Pendu</h1>
-          <h2>Développé par Van-Rottana YOU, Manu LUTI et Clément Vaugoyeau</h2>
+        <div className='Header'>
+          <h1 className ='Title'>Jeux du Pendu</h1>
+          <h2 className ='Devs'>Développé par Van-Rottana YOU, Manu LUTI et Clément Vaugoyeau</h2>
           <hr />
+          </div>
           <Word {...gameProps}/>
           <EssaisRestant {...gameProps}/>
           <Keyboard onClick={this.handleClick} {...gameProps}/>
-          <div>WIN :{this.state.win}</div>
+         
+           <div className='Win' > {this.FoundedOrNot()}</div> 
+           <div>result : {this.state.win}</div>
           <div id="anim"></div>
+         
         </div>
     );
   }
