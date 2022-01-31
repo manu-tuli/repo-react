@@ -19,23 +19,6 @@ class App extends Component {
       this.handleClick = this.handleClick.bind(this);
   }
 
-// componentDidMount() {
-    
-//     var scene = new THREE.Scene();
-//    const loader = new GLTFLoader();
-
-//     loader.load( '../public/scripts/pendu.glb', function ( gltf ) {
-
-//       scene.add( gltf.scene );
-
-//     }, undefined, function ( error ) {
-
-//       console.error( error );
-
-//     } );
-
-    
-//   }
 
   genererMots(){
     const result = [];
