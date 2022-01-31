@@ -5,7 +5,7 @@ import Lettre from '../Lettre/Lettre';
 
 class Word extends Component {
   render() {
-    console.log(this.props.motCache)
+    
     return (
       <div className="mot">
         {/* {this.props.motCache} */}

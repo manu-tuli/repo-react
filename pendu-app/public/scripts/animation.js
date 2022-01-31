@@ -20,9 +20,12 @@
 
 // import * as THREE from 'https://unpkg.com/three@0.126.1/build/three.module.js';
 
+import * as THREE from '../node_modules/three';
+import {GLTFLoader} from '../node_modules/three/examples/jsm/loaders/GLTFLoader';
+
 const loader = new THREE.GLTFLoader();
 
-loader.load( '../public/scripts/pendu.glb', function ( gltf ) {
+loader.load( './OilCan.glb', function ( gltf ) {
 
 	scene.add( gltf.scene );
 
