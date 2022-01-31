@@ -151,7 +151,7 @@ class App extends Component {
     return (
       <div className="Hangman">
         <div className='Header'>
-          <h1 className ='Title'>Jeux du Pendu</h1>
+          <h1 className ='Title'>Jeu du Pendu</h1>
           <h2 className ='Devs'>Développé par Van-Rottana YOU, Manu LUTI et Clément Vaugoyeau</h2>
           <hr />
           </div>
