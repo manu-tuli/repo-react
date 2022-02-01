@@ -1,9 +1,10 @@
 import './Keyboard.css';
+
 function Keyboard() {   
+    
     function GetKey(e){
         e.preventDefault();
-        
-
+        console.log(e);
         console.log('Le lien a été cliqué.');  // envoyer le contenu
     }
 
@@ -12,7 +13,7 @@ function Keyboard() {
 
     return (
         <div className="letter-container" style= {{display: "flex"}}>
-            {alphabet.filter(letter => letter.length <= 1).map((letter, index) => <div className="letter" 
+            {alphabet.map((letter, index) => <div className="letter" 
             key={index} value={letter} onClick={GetKey}>{letter}</div>)}
         </div>
     );

@@ -5,35 +5,33 @@
     margin: 2px;
     text-align: center;
     color: white;
-
-    /*
-    box-shadow: inset 5px 5px aliceblue;
-    display: flex;
-    align-self: center;
-    align-content: center;
-    */
+    box-shadow:  2px 2px 2px tomato; 
 }
 
-.letter-container :hover{
-    background-color: rgb(198, 154, 230);
-    box-shadow:  2px 2px 2px tomato;
+@keyframes animButton {
+    0% { background-color: rgb(238, 129, 238); }
+    20% { background-color: rgb(255, 0, 0); }
+    100% { background-color: rgb(238, 129, 238); }
+}
+
+@keyframes  animKeyboard {
+    0% { transform: translate(0); }
+    100%   { transform: translate(100%); }
 }
 
 .letter-container{
     display: flex;
-    background-color: whitesmoke;
     flex-wrap: wrap;
     justify-content: space-evenly;
+    background-color: whitesmoke;
+    box-shadow: 3px 3px 3px aliceblue;
     width: 400px;
     margin: 100px;
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 3px 3px 3px aliceblue;
+    animation: 1s ease-in-out 1s reverse running animKeyboard;
 }
 
-    /*
-    position: sticky;
-    align-items: center;
-    align-self: center;
-    align-content: center;
-    */
+.letter-container :hover{
+    animation: .5s ease-in-out .5s infinite running animButton;
+} 
