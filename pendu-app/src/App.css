@@ -28,6 +28,57 @@
   color: #61dafb;
 }
 
+
+.Header
+{
+  background-color: #999;
+  border-radius: 5%;
+
+}
+
+.Title
+{
+color: #222;
+display: flex;
+justify-content: center;
+padding: 1rem;
+
+
+}
+
+.Devs
+{
+  display: flex;
+  justify-content: center;
+  color: #333;
+  font-size: 1rem;
+}
+
+.Win
+{
+  display: flex;
+  justify-content: center;
+  color: #333;
+  font-size: 2rem;
+  background-color: #999;
+  
+  padding: 1rem;
+  border-radius: 5%;
+
+}
+
+.corps{
+  display: flex;
+}
+
+.jeu{
+  width: 45%;
+}
+
+#anim{
+  width: 45%;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -6,7 +6,7 @@ import Word from './Word/Word';
 import Keyboard from './Keyboard/Keyboard';
 import { GAME_WON, GAME_STARTED, GAME_OVER } from './Enums/game-states';
 import * as THREE from "three";
-// import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import song from "./jeux_video_game_over.mp3";
@@ -19,25 +19,34 @@ class App extends Component {
     super(props);
       this.genererMots();
       this.handleClick = this.handleClick.bind(this);
+      let mixer;
+      let model;
+      let gltf;
+      let clock;
+      let controls;
+      let scene;
+      let camera;
+      let renderer;
+
   }
 
   componentDidMount() {
+    this.clock = new THREE.Clock();
     let light;
     const SHADOW_MAP_WIDTH = 2048, SHADOW_MAP_HEIGHT = 1024;
-    var scene = new THREE.Scene();
+    this.scene = new THREE.Scene();
     const loader = new GLTFLoader();
-    const camera = new THREE.PerspectiveCamera(
+    this.camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    // const light = new THREE.PointLight( 0xff0000, 1, 100 );
-    // light.position.set( 50, 50, 50 );
-    scene.background = new THREE.Color( 0xffffff );
-		scene.fog = new THREE.Fog( 0xfffff, 1000, 3000 );
+    
+    this.scene.background = new THREE.Color( 0xffffff );
+		this.scene.fog = new THREE.Fog( 0xfffff, 1000, 3000 );
     const ambient = new THREE.AmbientLight( 0x444444 );
-		scene.add( ambient );
+		this.scene.add( ambient );
     light = new THREE.SpotLight( 0xffffff, 1, 0, Math.PI / 5, 0.3 );
 		light.position.set( 0, 1500, 1000 );
 		light.target.position.set( 0, 0, 0 );
@@ -50,73 +59,111 @@ class App extends Component {
 		light.shadow.mapSize.width = SHADOW_MAP_WIDTH;
 		light.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
 
-		scene.add( light );
+		this.scene.add( light );
     
-    // scene.background = new THREE.Color(0xffffff);
-    const renderer = new THREE.WebGLRenderer({antialias:true});
 
-    renderer.setSize(window.innerWidth/2, window.innerHeight/2);
-    document.getElementById('anim').appendChild(renderer.domElement);
-    const controls = new OrbitControls( camera, renderer.domElement );
-    controls.update();
-    loader.load("./Clement 3D/pendu2Binary.glb", (gltf) => {
-    // loader.load("./OilCan.glb", (gltf) => {
-      let model = gltf.scene;
-      // let part = model.getObjectByName('perso')
+    this.renderer = new THREE.WebGLRenderer({antialias:true});
 
-      // console.log(model)
-      // console.log(gltf);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('anim').appendChild(this.renderer.domElement);
+    this.controls = new OrbitControls( this.camera, this.renderer.domElement );
+    this.controls.update();
+    loader.load("./Clement 3D/pendu7.glb", (gltf) => {
+      this.gltf = gltf;
+      this.model = gltf.scene;
+      let perso = this.model.getObjectByName('perso');
 
       var textureLoader = new THREE.TextureLoader();
       textureLoader.crossOrigin = true;
       
-      // textureLoader.load("./Clement 3D/FullRender_MK1.jpg", function(texture) {
-      //     console.log(texture)
-      //     texture.anisotropy = 16
-      //     var material = new THREE.MeshPhongMaterial( { map: texture, opacity:1, transparent: true} );
-      //     model.material = material
-      // });
-
-      // model.scale.set(20.5,20.5,20.5)
       var axis = new THREE.Vector3(0,1,0);
-      model.rotateOnAxis(axis,2.9);
-      scene.add( model );
-      // renderer.render( scene, camera );
-      
-      // scene.add(gltf.scene);
+      // var position = new THREE.Vector3(0,1,0);
+      this.model.rotateOnAxis(axis,3.5);
+      this.model.position.x= -8;
+      this.model.position.y= 0;
+      this.model.position.z= 0;
+      this.mixer = new THREE.AnimationMixer( this.model );
+      const clips = gltf.animations;
+
+      this.scene.add( this.model );
+
 
     });
 
  
-    camera.position.z = 10;
-    camera.position.y = 1;
-    camera.position.x = -1;
-    // const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.camera.position.z = 12;
+    this.camera.position.y = 3;
+    // this.camera.position.x = 0;
+
+    let mix = this.mixer;
+    let newcontrols = this.controls;
+    let newrenderer = this.renderer;
+    let scene = this.scene;
+    let camera = this.camera;
      var animate = function () {
       requestAnimationFrame( animate );
-      controls.update();
-      renderer.render( scene, camera );
+      
+      if (mix) {
+        mix.update(this.clock.getDelta());
+      }
+      newcontrols.update();
+      newrenderer.render( scene, camera );
     };
-
-    // loader.load( '../public/scripts/pendu.glb', function ( gltf ) {
-
-    //   scene.add( gltf.scene );
-
-    // }, undefined, function ( error ) {
-
-    //   console.error( error );
-
-    // } );
 
     animate();
   }
 
-  // animate() {
-  //   requestAnimationFrame(animate);
-  //   obj.rotation.y += 0.001;
-  //   renderer.render(scene, camera);
-  // }
+  playAnimation(){
+    
+      this.mixer = new THREE.AnimationMixer( this.model );
+      const clips = this.gltf.animations;
 
+      const clipLevier = THREE.AnimationClip.findByName(clips,'LevierAction');
+      const actionlevier = this.mixer.clipAction(clipLevier);
+      actionlevier.setLoop(THREE.LoopOnce);
+      actionlevier.clampWhenFinished = true;
+
+      const clipTrappe = THREE.AnimationClip.findByName(clips,'TrappeAction');
+      const actionTrappe = this.mixer.clipAction(clipTrappe);
+      actionTrappe.setLoop(THREE.LoopOnce);
+      actionTrappe.clampWhenFinished = true;
+
+      const clipPerso = THREE.AnimationClip.findByName(clips,'persoAction');
+      const actionPerso = this.mixer.clipAction(clipPerso);
+      actionPerso.setLoop(THREE.LoopOnce);
+      actionPerso.clampWhenFinished = true;
+
+      const clipCorde= THREE.AnimationClip.findByName(clips,'BezierCircle.003Action');
+      const actionCorde = this.mixer.clipAction(clipCorde);
+      actionCorde.setLoop(THREE.LoopOnce);
+      actionCorde.clampWhenFinished = true;
+
+      const promise1 = Promise.resolve(actionlevier.play());
+      promise1.then((value) => {
+        actionTrappe.play();    
+        actionPerso.play(); 
+        actionCorde.play();
+      });
+      
+      let mix = this.mixer;
+      let newcontrols = this.controls;
+      let newrenderer = this.renderer;
+      let scene = this.scene;
+      let camera = this.camera;
+      let clock = this.clock;
+      var animate = function () {
+        requestAnimationFrame( animate );
+        
+        if (mix) {
+          mix.update(clock.getDelta());
+        }
+        newcontrols.update();
+        newrenderer.render( scene, camera );
+      };
+
+    animate();
+
+  }
 
   genererMots(){
     const result = [];
@@ -132,13 +179,12 @@ class App extends Component {
     this.state = {
       date: new Date(),
       essaisRestant: 10,
-      // motCache: Array.from("test pendu"),
       motAtrouver : result,
       motCache: motCache,
       lettreDonnee: "",
       pastGuesses: [],
       gameState: GAME_STARTED,
-      win : false
+      win : ""
       };
       console.log(this.state.motAtrouver)
 
@@ -173,17 +219,22 @@ class App extends Component {
   }
 
   checkWin(newmotCache){
+
     let win = "true";
+
     for (var i=0; i < newmotCache.length ; i++){
         if (newmotCache[i] != this.state.motAtrouver[i]){
           win = "false"
         }
     }
-
+    
     if (this.state.essaisRestant === 1){
       const audio = new Audio(song)
-      // audio.play();
+      audio.play();
+      this.playAnimation();
+      win = "false"
     }
+
     return win;
   }
 
@@ -203,15 +254,59 @@ class App extends Component {
       if (bool === "false"){
         newnbEssais = newnbEssais -1 ;
       } 
-       let stateUpdate = {
+       
+      let stateUpdate = {
           motCache: newmotCache,
           pastGuesses: [letter].concat(prevState.pastGuesses),
           win: bool,
           essaisRestant : newnbEssais
-        };
+      };
+
       return stateUpdate
+      
     });
 
+  }
+
+  FoundedOrNot () {
+     
+    const found ='Tu as gagné !!!';
+    const cont = 'Continue';
+    const fail = 'Tu as perdu !!!';
+
+    let conmpteur = 0;
+
+    if(this.state.win === "false" && this.state.essaisRestant > 0){
+      conmpteur = 0;     
+    }
+
+    if(this.state.win === "false" && this.state.essaisRestant <= 0){
+      conmpteur = 1;     
+    }
+
+    if(this.state.win === "true" && this.state.essaisRestant > 0){
+      conmpteur = 2;     
+    }
+
+    switch (conmpteur)
+    {
+        case 0:
+            return cont;
+            break;
+
+        case 1:
+            return fail;
+            break;
+
+        case 2:
+            return found
+            break;
+
+        default:
+            return 'bug'
+            break;
+    }
+    
   }
 
   render() {
@@ -221,19 +316,22 @@ class App extends Component {
 
     return (
       <div className="Hangman">
-          <h1>Jeux du Pendu</h1>
-          <h2>Développé par Van-Rottana YOU, Manu LUTI et Clément Vaugoyeau</h2>
+        <div className='Header'>
+          <h1 className ='Title'>Jeux du Pendu</h1>
+          <h2 className ='Devs'>Développé par Van-Rottana YOU, Manu LUTI et Clément Vaugoyeau</h2>
           <hr />
-          <Word {...gameProps}/>
-          <EssaisRestant {...gameProps}/>
-          <Keyboard onClick={this.handleClick} {...gameProps}/>
-          <div>WIN :{this.state.win}</div>
-          <div id="anim"></div>
-          <audio id="audioPlayer" src="./jeux_video_game_over.mp3"></audio>
-          {/* <audio>
-            <source src="jeux_video_game_over.mp3" type="audio/mp3">
-          </audio> */}
         </div>
+        <div className="corps">
+          <div className="jeu">
+            <Word {...gameProps}/>
+            <EssaisRestant {...gameProps}/>
+            <Keyboard onClick={this.handleClick} {...gameProps}/>
+            <div className='Win'> {this.FoundedOrNot()}</div>
+          </div>
+          <div id="anim"></div>
+        </div>
+        <audio id="audioPlayer" src="./jeux_video_game_over.mp3"></audio>
+      </div>
     );
   }
 }
